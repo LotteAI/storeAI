@@ -1,9 +1,9 @@
 /**
- * Admin Dashboard Logic (Authentication, Chart.js Visualizations, Excel Export, Data Table, Sorting, Deleting, Subjective Toggle)
+ * Admin Dashboard Logic for Store AI
  */
 
 let surveyResponses = [];
-let currentFeedbackTab = 'q8'; // 8번 문항으로 기본 탭 설정
+let currentFeedbackTab = 'q6'; // Q6 문항으로 기본 탭 설정
 let adminPassword = '';
 
 // 정렬 및 선택 상태 관리 전역 변수
@@ -17,9 +17,9 @@ let showAllSubjective = false; // 주관식 전체 보기 여부
 // Chart.js 인스턴스 참조 보관용 객체
 const charts = {
   metricsAvg: null,
-  eduDates: null,
-  liked: null,
-  improved: null
+  storeTypes: null,
+  jobTypes: null,
+  publicFeatures: null
 };
 
 // 상단 대형 네비게이션 탭 전환 제어
@@ -37,7 +37,7 @@ function switchNavTab(tabKey) {
     btnDashboard.classList.add("active");
     btnTable.classList.remove("active");
 
-    // 숨겨진 컨테이너에서 드러날 때 차트가 찌그러지는 현상 리사이즈로 예방
+    // 숨겨진 컨테이너에서 드러날 때 차트 찌그러짐 예방을 위한 업데이트
     setTimeout(() => {
       Object.keys(charts).forEach(key => {
         if (charts[key]) {
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
   lucide.createIcons();
 
   // 세션 스토리지에 암호 정보가 있는 경우 자동 로그인 시도
-  const savedPw = sessionStorage.getItem("admin_pw");
+  const savedPw = sessionStorage.getItem("admin_pw_storeai");
   if (savedPw) {
     document.getElementById("inputPassword").value = savedPw;
     verifyAdmin();
@@ -100,7 +100,7 @@ async function verifyAdmin() {
     
     // 인증 성공 처리
     adminPassword = pw;
-    sessionStorage.setItem("admin_pw", pw);
+    sessionStorage.setItem("admin_pw_storeai", pw);
     surveyResponses = responses;
     
     // UI 전환
@@ -170,24 +170,24 @@ function renderMetrics() {
   document.getElementById("metricTotalResponses").innerText = count;
 
   if (count === 0) {
-    document.getElementById("metricAvgSatisfaction").innerHTML = `0.0 <span class="max-val">/ 5.0</span>`;
-    document.getElementById("metricNPS").innerHTML = `0.0 <span class="max-val">/ 5.0</span>`;
-    document.getElementById("metricAvgExpertise").innerHTML = `0.0 <span class="max-val">/ 5.0</span>`;
+    document.getElementById("metricAvgMap").innerHTML = `0.0 <span class="max-val">/ 5.0</span>`;
+    document.getElementById("metricAvgCal").innerHTML = `0.0 <span class="max-val">/ 5.0</span>`;
+    document.getElementById("metricAvgEff").innerHTML = `0.0 <span class="max-val">/ 5.0</span>`;
     return;
   }
 
-  // 만족도(q1), 추천(q5), 강사전문성(q3) 평균 계산
-  const sumQ1 = surveyResponses.reduce((acc, curr) => acc + (curr.q1 || 0), 0);
-  const sumQ5 = surveyResponses.reduce((acc, curr) => acc + (curr.q5 || 0), 0);
+  // q3(지도), q5(캘린더), q9(효율성) 평균 계산
   const sumQ3 = surveyResponses.reduce((acc, curr) => acc + (curr.q3 || 0), 0);
+  const sumQ5 = surveyResponses.reduce((acc, curr) => acc + (curr.q5 || 0), 0);
+  const sumQ9 = surveyResponses.reduce((acc, curr) => acc + (curr.q9 || 0), 0);
 
-  const avgQ1 = (sumQ1 / count).toFixed(1);
-  const avgQ5 = (sumQ5 / count).toFixed(1);
   const avgQ3 = (sumQ3 / count).toFixed(1);
+  const avgQ5 = (sumQ5 / count).toFixed(1);
+  const avgQ9 = (sumQ9 / count).toFixed(1);
 
-  document.getElementById("metricAvgSatisfaction").innerHTML = `${avgQ1} <span class="max-val">/ 5.0</span>`;
-  document.getElementById("metricNPS").innerHTML = `${avgQ5} <span class="max-val">/ 5.0</span>`;
-  document.getElementById("metricAvgExpertise").innerHTML = `${avgQ3} <span class="max-val">/ 5.0</span>`;
+  document.getElementById("metricAvgMap").innerHTML = `${avgQ3} <span class="max-val">/ 5.0</span>`;
+  document.getElementById("metricAvgCal").innerHTML = `${avgQ5} <span class="max-val">/ 5.0</span>`;
+  document.getElementById("metricAvgEff").innerHTML = `${avgQ9} <span class="max-val">/ 5.0</span>`;
 }
 
 // 2. Chart.js 시각화 차트 렌더링
@@ -213,14 +213,12 @@ function renderCharts() {
   Chart.defaults.color = textColor;
   Chart.defaults.font.family = 'Inter, -apple-system, sans-serif';
 
-  // --- 차트 1: 핵심 평가 지표 평균 (가로형 막대 차트) ---
-  const indicatorSums = [0, 0, 0, 0, 0];
+  // --- 차트 1: 5점 척도 핵심 평가 지표 평균 (가로형 막대 차트) ---
+  const indicatorSums = [0, 0, 0];
   surveyResponses.forEach(r => {
-    indicatorSums[0] += r.q1 || 0;
-    indicatorSums[1] += r.q2 || 0;
-    indicatorSums[2] += r.q3 || 0;
-    indicatorSums[3] += r.q4 || 0;
-    indicatorSums[4] += r.q5 || 0;
+    indicatorSums[0] += r.q3 || 0;
+    indicatorSums[1] += r.q5 || 0;
+    indicatorSums[2] += r.q9 || 0;
   });
   
   const indicatorAvgs = indicatorSums.map(sum => (sum / count).toFixed(2));
@@ -229,14 +227,14 @@ function renderCharts() {
   charts.metricsAvg = new Chart(ctx1, {
     type: 'bar',
     data: {
-      labels: ["전반적 만족도", "콘텐츠 깊이/난이도", "강사 전문성/소통", "부가자료 도움", "동료 추천의향"],
+      labels: ["Q3. 지도 유용성", "Q5. 캘린더 도움도", "Q9. 업무 효율 개선"],
       datasets: [{
         label: '평균 점수 (5점 만점)',
         data: indicatorAvgs,
-        backgroundColor: [colorPrimary, colorSecondary, colorAccent, '#ff9f0a', '#bf5af2'],
+        backgroundColor: [colorPrimary, colorSecondary, colorAccent],
         borderRadius: 8,
         borderWidth: 0,
-        barThickness: 18
+        barThickness: 20
       }]
     },
     options: {
@@ -258,25 +256,90 @@ function renderCharts() {
     }
   });
 
-  // --- 차트 2: 교육 일자별 응답 분포 (세로형 막대 차트) ---
-  const dateCounts = {};
+  // --- 차트 2: 점포 유형별 응답 분포 (Q1: 백화점/아울렛 비율) ---
+  const storeCounts = { "백화점": 0, "아울렛": 0 };
   surveyResponses.forEach(r => {
-    dateCounts[r.eduDate] = (dateCounts[r.eduDate] || 0) + 1;
+    if (storeCounts[r.q1] !== undefined) {
+      storeCounts[r.q1]++;
+    }
   });
-  const dateLabels = Object.keys(dateCounts).sort();
-  const dateValues = dateLabels.map(label => dateCounts[label]);
 
-  const ctx2 = document.getElementById('chartEduDates').getContext('2d');
-  charts.eduDates = new Chart(ctx2, {
+  const ctx2 = document.getElementById('chartStoreTypes').getContext('2d');
+  charts.storeTypes = new Chart(ctx2, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(storeCounts),
+      datasets: [{
+        data: Object.values(storeCounts),
+        backgroundColor: ['#0071e3', '#ff9f0a'],
+        borderWidth: 2,
+        borderColor: '#121318'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      },
+      cutout: '55%'
+    }
+  });
+
+  // --- 차트 3: 담당 업무별 응답 분포 (Q2: 영업/지원 비율) ---
+  const jobCounts = { "영업": 0, "지원": 0 };
+  surveyResponses.forEach(r => {
+    if (jobCounts[r.q2] !== undefined) {
+      jobCounts[r.q2]++;
+    }
+  });
+
+  const ctx3 = document.getElementById('chartJobTypes').getContext('2d');
+  charts.jobTypes = new Chart(ctx3, {
+    type: 'doughnut',
+    data: {
+      labels: Object.keys(jobCounts),
+      datasets: [{
+        data: Object.values(jobCounts),
+        backgroundColor: ['#6e00f5', '#30d158'],
+        borderWidth: 2,
+        borderColor: '#121318'
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom' }
+      },
+      cutout: '55%'
+    }
+  });
+
+  // --- 차트 4: 공공 데이터 실효성 선호 빈도 (Q4 다중 선택) ---
+  const publicCounts = {};
+  surveyResponses.forEach(r => {
+    if (r.q4 && Array.isArray(r.q4)) {
+      r.q4.forEach(val => {
+        publicCounts[val] = (publicCounts[val] || 0) + 1;
+      });
+    }
+  });
+
+  const publicLabels = Object.keys(publicCounts).sort((a,b) => publicCounts[b] - publicCounts[a]);
+  const publicValues = publicLabels.map(label => publicCounts[label]);
+
+  const ctx4 = document.getElementById('chartPublicFeatures').getContext('2d');
+  charts.publicFeatures = new Chart(ctx4, {
     type: 'bar',
     data: {
-      labels: dateLabels,
+      labels: publicLabels,
       datasets: [{
-        label: '응답자 수 (명)',
-        data: dateValues,
-        backgroundColor: colorPrimary,
+        label: '선택 빈도 (명)',
+        data: publicValues,
+        backgroundColor: '#bf5af2',
         borderRadius: 6,
-        barThickness: 24
+        barThickness: 20
       }]
     },
     options: {
@@ -293,94 +356,6 @@ function renderCharts() {
       }
     }
   });
-
-  // --- 차트 3: 마음에 들었던 점 분석 (도넛 차트 - q6) ---
-  const q6Counts = {};
-  surveyResponses.forEach(r => {
-    if (r.q6 && Array.isArray(r.q6)) {
-      r.q6.forEach(val => {
-        q6Counts[val] = (q6Counts[val] || 0) + 1;
-      });
-    }
-  });
-  const q6EtcCount = surveyResponses.filter(r => r.q6_etc && r.q6_etc.trim().length > 0).length;
-  if (q6EtcCount > 0) {
-    q6Counts["기타"] = q6EtcCount;
-  }
-
-  const q6Labels = Object.keys(q6Counts).sort((a,b) => q6Counts[b] - q6Counts[a]);
-  const q6Values = q6Labels.map(label => q6Counts[label]);
-
-  const ctx3 = document.getElementById('chartLikedFeatures').getContext('2d');
-  charts.liked = new Chart(ctx3, {
-    type: 'doughnut',
-    data: {
-      labels: q6Labels,
-      datasets: [{
-        data: q6Values,
-        backgroundColor: [
-          '#ff3b30', '#ff9f0a', '#34c759', '#0071e3', '#af52de', '#5856d6', '#545456', '#a1a1a6'
-        ],
-        borderWidth: 2,
-        borderColor: '#121318'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: { boxWidth: 12, font: { size: 10 } }
-        }
-      },
-      cutout: '60%'
-    }
-  });
-
-  // --- 차트 4: 개선 사항 분석 (도넛 차트 - q7) ---
-  const q7Counts = {};
-  surveyResponses.forEach(r => {
-    if (r.q7 && Array.isArray(r.q7)) {
-      r.q7.forEach(val => {
-        q7Counts[val] = (q7Counts[val] || 0) + 1;
-      });
-    }
-  });
-  const q7EtcCount = surveyResponses.filter(r => r.q7_etc && r.q7_etc.trim().length > 0).length;
-  if (q7EtcCount > 0) {
-    q7Counts["기타"] = q7EtcCount;
-  }
-
-  const q7Labels = Object.keys(q7Counts).sort((a,b) => q7Counts[b] - q7Counts[a]);
-  const q7Values = q7Labels.map(label => q7Counts[label]);
-
-  const ctx4 = document.getElementById('chartImprovedFeatures').getContext('2d');
-  charts.improved = new Chart(ctx4, {
-    type: 'doughnut',
-    data: {
-      labels: q7Labels,
-      datasets: [{
-        data: q7Values,
-        backgroundColor: [
-          '#545456', '#ff453a', '#ff9f0a', '#30d158', '#0a84ff', '#bf5af2', '#64d2ff', '#a1a1a6'
-        ],
-        borderWidth: 2,
-        borderColor: '#121318'
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'right',
-          labels: { boxWidth: 12, font: { size: 10 } }
-        }
-      },
-      cutout: '60%'
-    }
-  });
 }
 
 // 3. 주관식 피드백 리스트 출력
@@ -389,52 +364,21 @@ function renderFeedback() {
   container.innerHTML = "";
 
   let listHtml = "";
+  const items = surveyResponses.filter(r => r[currentFeedbackTab] && r[currentFeedbackTab].trim().length > 0);
 
-  if (currentFeedbackTab === 'q8') {
-    // 8. 현업 활용 필요 요소
-    const items = surveyResponses.filter(r => r.q8 && r.q8.trim().length > 0);
-    if (items.length === 0) {
-      listHtml = `<p class="no-feedback">작성된 의견이 없습니다.</p>`;
-    } else {
-      items.forEach(r => {
-        listHtml += createFeedbackCard(r.name, r.submittedAt, r.q8);
-      });
-    }
-  } else if (currentFeedbackTab === 'q9') {
-    // 9. 교육 소감
-    const items = surveyResponses.filter(r => r.q9 && r.q9.trim().length > 0);
-    if (items.length === 0) {
-      listHtml = `<p class="no-feedback">작성된 교육 소감이 없습니다.</p>`;
-    } else {
-      items.forEach(r => {
-        listHtml += createFeedbackCard(r.name, r.submittedAt, r.q9);
-      });
-    }
-  } else if (currentFeedbackTab === 'etc') {
-    // 기타 의견 (Q6기타, Q7기타 모음)
-    const items = surveyResponses.filter(r => 
-      (r.q6_etc && r.q6_etc.trim().length > 0) || 
-      (r.q7_etc && r.q7_etc.trim().length > 0)
-    );
-    
-    if (items.length === 0) {
-      listHtml = `<p class="no-feedback">작성된 주관식 기타 의견이 없습니다.</p>`;
-    } else {
-      items.forEach(r => {
-        let content = "";
-        if (r.q6_etc) content += `<strong>[마음에 든 점 기타]</strong> ${r.q6_etc}\n`;
-        if (r.q7_etc) content += `<strong>[개선점 기타]</strong> ${r.q7_etc}`;
-        
-        listHtml += createFeedbackCard(r.name, r.submittedAt, content);
-      });
-    }
+  if (items.length === 0) {
+    listHtml = `<p class="no-feedback">작성된 의견이 없습니다.</p>`;
+  } else {
+    items.forEach(r => {
+      listHtml += createFeedbackCard(r.q1, r.q2, r.submittedAt, r[currentFeedbackTab]);
+    });
   }
 
   container.innerHTML = listHtml;
 }
 
 // 피드백 카드 HTML 템플릿 생성기
-function createFeedbackCard(name, dateStr, content) {
+function createFeedbackCard(storeType, jobType, dateStr, content) {
   const formattedDate = new Date(dateStr).toLocaleString('ko-KR', {
     month: 'short',
     day: 'numeric',
@@ -445,7 +389,7 @@ function createFeedbackCard(name, dateStr, content) {
   return `
     <div class="feedback-card">
       <div class="feedback-meta">
-        <span class="feedback-name">${name} 응답자</span>
+        <span class="feedback-name">${storeType} / ${jobType} 담당자</span>
         <span class="feedback-date">${formattedDate}</span>
       </div>
       <div class="feedback-content">${content}</div>
@@ -467,7 +411,7 @@ function switchFeedbackTab(tabKey) {
   renderFeedback();
 }
 
-// 4. 데이터 표(Table) 렌더링 및 3단계 정렬 기능 (주관식 열 바인딩 추가)
+// 4. 데이터 표(Table) 렌더링 및 정렬 기능
 function renderTable() {
   const tableBody = document.getElementById("tableBody");
   const tableElement = document.getElementById("surveyTable");
@@ -477,7 +421,7 @@ function renderTable() {
 
   const count = surveyResponses.length;
   if (count === 0) {
-    tableBody.innerHTML = `<tr><td colspan="14" class="no-feedback" style="text-align:center;">설문 데이터가 존재하지 않습니다.</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="13" class="no-feedback" style="text-align:center;">설문 데이터가 존재하지 않습니다.</td></tr>`;
     return;
   }
 
@@ -506,7 +450,7 @@ function renderTable() {
   }
 
   // 2. 정렬 아이콘 헤더 업데이트
-  const headers = ['name', 'eduDate', 'q1', 'q2', 'q3', 'q4', 'q5', 'q6_etc', 'q7_etc', 'q8', 'q9', 'submittedAt'];
+  const headers = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'submittedAt'];
   headers.forEach(header => {
     const iconSpan = document.getElementById(`sort-${header}`);
     if (iconSpan) {
@@ -531,27 +475,25 @@ function renderTable() {
     
     const isChecked = selectedResponseIds.includes(r.id);
 
-    // 큰따옴표가 들어가도 깨지지 않도록 치환 이스케이프
-    const q6_etc = (r.q6_etc || '').replace(/"/g, '&quot;');
-    const q7_etc = (r.q7_etc || '').replace(/"/g, '&quot;');
+    const q4Str = Array.isArray(r.q4) ? r.q4.join(", ") : (r.q4 || '');
+    const q6 = (r.q6 || '').replace(/"/g, '&quot;');
+    const q7 = (r.q7 || '').replace(/"/g, '&quot;');
     const q8 = (r.q8 || '').replace(/"/g, '&quot;');
-    const q9 = (r.q9 || '').replace(/"/g, '&quot;');
+    const q10 = (r.q10 || '').replace(/"/g, '&quot;');
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
       <td><input type="checkbox" class="row-checkbox" data-id="${r.id}" ${isChecked ? 'checked' : ''} onchange="handleRowCheckboxChange('${r.id}', this.checked)"></td>
-      <td><strong>${r.name}</strong></td>
-      <td>${r.eduDate}</td>
-      <td>${r.q1}</td>
+      <td><strong>${r.q1}</strong></td>
       <td>${r.q2}</td>
       <td>${r.q3}</td>
-      <td>${r.q4}</td>
+      <td class="subjective-col" title="${q4Str}">${q4Str}</td>
       <td>${r.q5}</td>
-      <!-- 주관식 데이터 셀 및 마우스 호버 전체 노출 title 속성 -->
-      <td class="subjective-col" title="${q6_etc || '-'}">${r.q6_etc || '-'}</td>
-      <td class="subjective-col" title="${q7_etc || '-'}">${r.q7_etc || '-'}</td>
+      <td class="subjective-col" title="${q6 || '-'}">${r.q6 || '-'}</td>
+      <td class="subjective-col" title="${q7 || '-'}">${r.q7 || '-'}</td>
       <td class="subjective-col" title="${q8 || '-'}">${r.q8 || '-'}</td>
-      <td class="subjective-col" title="${q9 || '-'}">${r.q9 || '-'}</td>
+      <td>${r.q9}</td>
+      <td class="subjective-col" title="${q10 || '-'}">${r.q10 || '-'}</td>
       <td><span class="feedback-date">${dateStr}</span></td>
       <td>
         <button class="btn-row-delete" onclick="openDeleteModal('${r.id}')" title="삭제">
@@ -701,7 +643,7 @@ async function confirmDelete() {
   }
 }
 
-// 5. SheetJS를 활용한 엑셀 파일 다운로드
+// SheetJS를 활용한 엑셀 파일 다운로드
 function downloadExcel() {
   if (surveyResponses.length === 0) {
     alert("다운로드할 데이터가 없습니다.");
@@ -712,19 +654,16 @@ function downloadExcel() {
     const formattedDate = new Date(r.submittedAt).toLocaleString('ko-KR');
     return {
       "번호": surveyResponses.length - index,
-      "성함": r.name || "",
-      "참여 교육 일자": r.eduDate || "",
-      "Q1. 전반적 만족도": r.q1 || 0,
-      "Q2. 콘텐츠 깊이/난이도": r.q2 || 0,
-      "Q3. 강사 전문성/소통": r.q3 || 0,
-      "Q4. 부가자료 도움": r.q4 || 0,
-      "Q5. 동료 추천의향": r.q5 || 0,
-      "Q6. 마음에 든 항목": (r.q6 || []).join(", "),
-      "Q6. 마음에 든 항목 (기타)": r.q6_etc || "",
-      "Q7. 개선 필요 항목": (r.q7 || []).join(", "),
-      "Q7. 개선 필요 항목 (기타)": r.q7_etc || "",
-      "Q8. 현업 활용 필요 요소": r.q8 || "",
-      "Q9. 교육 소감 및 피드백": r.q9 || "",
+      "점포 유형 (Q1)": r.q1 || "",
+      "담당 업무 (Q2)": r.q2 || "",
+      "지도 유용성 (Q3)": r.q3 || 0,
+      "공공 데이터 실효성 (Q4)": Array.isArray(r.q4) ? r.q4.join(", ") : (r.q4 || ''),
+      "캘린더 도움도 (Q5)": r.q5 || 0,
+      "추가 희망 데이터 (Q6)": r.q6 || "",
+      "AI 제언 필요 영역 (Q7)": r.q7 || "",
+      "AI 신뢰 핵심 변수 (Q8)": r.q8 || "",
+      "업무 효율 개선 (Q9)": r.q9 || 0,
+      "종합 보완 의견 (Q10)": r.q10 || "",
       "제출 시간": formattedDate
     };
   });
@@ -735,30 +674,27 @@ function downloadExcel() {
   // 컬럼 너비 자동 설정
   const colWidths = [
     { wch: 6 },  // 번호
-    { wch: 10 }, // 성함
-    { wch: 15 }, // 참여 교육 일자
-    { wch: 18 }, // Q1
-    { wch: 22 }, // Q2
-    { wch: 22 }, // Q3
-    { wch: 18 }, // Q4
-    { wch: 18 }, // Q5
-    { wch: 30 }, // Q6
-    { wch: 30 }, // Q6 기타
-    { wch: 30 }, // Q7
-    { wch: 30 }, // Q7 기타
-    { wch: 45 }, // Q8 현업 활용
-    { wch: 45 }, // Q9 소감
+    { wch: 15 }, // 점포 유형
+    { wch: 15 }, // 담당 업무
+    { wch: 15 }, // 지도 유용성
+    { wch: 35 }, // 공공 데이터
+    { wch: 15 }, // 캘린더 도움도
+    { wch: 45 }, // Q6 추가 희망 데이터
+    { wch: 45 }, // Q7 제언 영역
+    { wch: 45 }, // Q8 신뢰 변수
+    { wch: 15 }, // Q9 업무 효율
+    { wch: 45 }, // Q10 보완 의견
     { wch: 22 }  // 제출 시간
   ];
   worksheet['!cols'] = colWidths;
 
   const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "만족도 조사 결과");
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Store AI 설문 결과");
 
-  XLSX.writeFile(workbook, "AXer_Incubator_Survey_Results.xlsx");
+  XLSX.writeFile(workbook, "Store_AI_Survey_Results.xlsx");
 }
 
-// 흔들림 애니메이션 CSS 추가
+// 흔들림 애니메이션 및 스피너 스타일
 const styleSheet = document.createElement("style");
 styleSheet.innerText = `
   @keyframes shake {

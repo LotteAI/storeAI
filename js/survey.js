@@ -1,9 +1,9 @@
 /**
- * Survey Logic (Typeform Style Navigation & Validation)
+ * Store AI Survey Logic (Typeform Style Navigation & Validation)
  */
 
 let currentStep = 0;
-const totalSteps = 11; // 웰컴 화면(0)과 제출 완료 화면(12)을 제외한 질문 수 (1 ~ 11)
+const totalSteps = 10; // 질문 수 (1 ~ 10)
 
 document.addEventListener("DOMContentLoaded", () => {
   // Lucide 아이콘 초기화
@@ -43,87 +43,38 @@ function setupEventListeners() {
       }
       e.preventDefault();
       
-      const currentCard = document.querySelector(`.survey-card[data-step="${currentStep}"]`);
       if (currentStep === 0) {
         nextStep();
-      } else if (currentStep <= totalSteps) {
+      } else if (currentStep < totalSteps) {
         validateAndNext(currentStep);
+      } else if (currentStep === totalSteps) {
+        submitSurvey();
       }
     }
   });
 
-  // 2. 6번(Q6) 기타 체크박스 활성화 감지
-  const q6Checkboxes = document.querySelectorAll('input[name="q6"]');
-  const q6EtcCheck = document.getElementById("q6EtcCheck");
-  const inputQ6Etc = document.getElementById("inputQ6Etc");
-  
-  q6Checkboxes.forEach(cb => {
+  // 2. 4번(Q4) 공공 데이터 체크박스 '모두 유용하지 않음' 선택 시 상호 배제 처리
+  const q4Checkboxes = document.querySelectorAll('input[name="q4"]');
+  q4Checkboxes.forEach(cb => {
     cb.addEventListener("change", () => {
-      // '없음' 선택 시 다른 모든 체크박스 해제
-      if (cb.value === "없음" && cb.checked) {
-        q6Checkboxes.forEach(other => {
-          if (other.value !== "없음") {
+      if (cb.value === "모두 유용하지 않음" && cb.checked) {
+        q4Checkboxes.forEach(other => {
+          if (other.value !== "모두 유용하지 않음") {
             other.checked = false;
           }
         });
-        inputQ6Etc.disabled = true;
-        inputQ6Etc.value = "";
-      } else if (cb.value !== "없음" && cb.checked) {
-        // 다른 항목 선택 시 '없음' 체크 해제
-        const noneCb = Array.from(q6Checkboxes).find(other => other.value === "없음");
+      } else if (cb.value !== "모두 유용하지 않음" && cb.checked) {
+        const noneCb = Array.from(q4Checkboxes).find(other => other.value === "모두 유용하지 않음");
         if (noneCb) noneCb.checked = false;
-      }
-      
-      if (q6EtcCheck) {
-        inputQ6Etc.disabled = !q6EtcCheck.checked;
-        if (q6EtcCheck.checked) {
-          inputQ6Etc.focus();
-        } else {
-          inputQ6Etc.value = "";
-        }
       }
     });
   });
 
-  // 3. 7번(Q7) 기타 체크박스 활성화 감지
-  const q7Checkboxes = document.querySelectorAll('input[name="q7"]');
-  const q7EtcCheck = document.getElementById("q7EtcCheck");
-  const inputQ7Etc = document.getElementById("inputQ7Etc");
-  
-  q7Checkboxes.forEach(cb => {
-    cb.addEventListener("change", () => {
-      // '없음' 선택 시 다른 모든 체크박스 해제
-      if (cb.value === "없음" && cb.checked) {
-        q7Checkboxes.forEach(other => {
-          if (other.value !== "없음") {
-            other.checked = false;
-          }
-        });
-        inputQ7Etc.disabled = true;
-        inputQ7Etc.value = "";
-      } else if (cb.value !== "없음" && cb.checked) {
-        // 다른 항목 선택 시 '없음' 체크 해제
-        const noneCb = Array.from(q7Checkboxes).find(other => other.value === "없음");
-        if (noneCb) noneCb.checked = false;
-      }
-      
-      if (q7EtcCheck) {
-        inputQ7Etc.disabled = !q7EtcCheck.checked;
-        if (q7EtcCheck.checked) {
-          inputQ7Etc.focus();
-        } else {
-          inputQ7Etc.value = "";
-        }
-      }
-    });
-  });
-
-  // 4. 라디오 버튼 선택 시 0.4초 후 자동으로 다음 스텝 이동 (더 빠른 작성 경험 제공)
+  // 3. 라디오 버튼 선택 시 0.4초 후 자동으로 다음 스텝 이동
   const autoNextRadios = document.querySelectorAll('.scale-item input, .options-grid input[type="radio"]');
   autoNextRadios.forEach(radio => {
     radio.addEventListener("change", () => {
       setTimeout(() => {
-        // 현재 선택된 라디오의 Step이 현재 진행중인 Step인 경우에만 이동
         const card = radio.closest('.survey-card');
         const stepNum = parseInt(card.getAttribute('data-step'));
         if (stepNum === currentStep) {
@@ -177,7 +128,6 @@ function prevStep() {
     
     if (!fromCard || !toCard) return;
 
-    // 이전으로 갈 때는 반대 방향으로 연출
     fromCard.classList.remove("slide-down-in");
     fromCard.style.animation = "slideDownIn 0.35s cubic-bezier(0.25, 0.8, 0.25, 1) reverse forwards";
     
@@ -210,38 +160,16 @@ function validateAndNext(step) {
 
   let isValid = false;
   
-  // 1. 성함 (텍스트 입력) 검증
-  if (step === 1) {
-    const nameInput = document.getElementById("inputName");
-    isValid = nameInput.value.trim().length > 0;
-  }
-  // 2. 참여 일자 및 만족도 라디오 버튼 검증
-  else if (step === 2) {
-    const checked = card.querySelector('input[name="eduDate"]:checked');
-    isValid = checked !== null;
-  }
-  else if (step >= 3 && step <= 7) {
-    const qNum = `q${step - 2}`;
+  // Q1, Q2, Q3, Q5, Q9 (라디오 버튼 검증)
+  if (step === 1 || step === 2 || step === 3 || step === 5 || step === 9) {
+    const qNum = `q${step}`;
     const checked = card.querySelector(`input[name="${qNum}"]:checked`);
     isValid = checked !== null;
   }
-  // 3. 복수선택 체크박스 검증 (6번, 7번 질문)
-  else if (step === 8 || step === 9) {
-    const qNum = step === 8 ? "q6" : "q7";
-    const checkedBoxes = card.querySelectorAll(`input[name="${qNum}"]:checked`);
-    
-    // 최소 1개 이상 선택
+  // Q4 (체크박스 검증)
+  else if (step === 4) {
+    const checkedBoxes = card.querySelectorAll(`input[name="q4"]:checked`);
     isValid = checkedBoxes.length > 0;
-    
-    // 기타가 체크된 경우, 텍스트가 작성되었는지 확인
-    const etcCheck = document.getElementById(`${qNum}EtcCheck`);
-    const etcInput = document.getElementById(`input${qNum.toUpperCase()}Etc`);
-    if (etcCheck && etcCheck.checked) {
-      if (etcInput.value.trim().length === 0) {
-        isValid = false;
-        etcInput.focus();
-      }
-    }
   }
 
   if (isValid) {
@@ -269,8 +197,8 @@ async function submitSurvey() {
     const data = parseFormData();
     await window.dbService.submitResponse(data);
     
-    // 제출 성공 시 다음 스텝(제출 완료 화면 - 12번)으로 이동
-    transitionCard(currentStep, 12);
+    // 제출 성공 시 완료 화면(Step 11)으로 이동
+    transitionCard(currentStep, 11);
   } catch (error) {
     console.error("설문 제출에 실패했습니다:", error);
     alert(error.message || "제출에 실패했습니다. 네트워크 상태 및 파이어베이스 설정을 확인하시고 다시 시도해 주세요.");
@@ -279,40 +207,27 @@ async function submitSurvey() {
   }
 }
 
-// 폼 데이터를 데이터베이스에 보낼 객체로 가공
+// 폼 데이터 파싱
 function parseFormData() {
-  const name = document.getElementById("inputName").value.trim();
-  const eduDate = document.querySelector('input[name="eduDate"]:checked').value;
-  
-  const q1 = parseInt(document.querySelector('input[name="q1"]:checked').value);
-  const q2 = parseInt(document.querySelector('input[name="q2"]:checked').value);
+  const q1 = document.querySelector('input[name="q1"]:checked').value;
+  const q2 = document.querySelector('input[name="q2"]:checked').value;
   const q3 = parseInt(document.querySelector('input[name="q3"]:checked').value);
-  const q4 = parseInt(document.querySelector('input[name="q4"]:checked').value);
+  
+  const q4Checked = document.querySelectorAll('input[name="q4"]:checked');
+  const q4 = Array.from(q4Checked).map(cb => cb.value);
+  
   const q5 = parseInt(document.querySelector('input[name="q5"]:checked').value);
   
-  // 6번 질문 마음에 들었던 점 파싱
-  const q6Checked = document.querySelectorAll('input[name="q6"]:checked');
-  const q6 = Array.from(q6Checked).map(cb => cb.value).filter(val => val !== "기타");
-  const q6_etc = document.getElementById("inputQ6Etc").value.trim();
-  
-  // 7번 질문 개선점 파싱
-  const q7Checked = document.querySelectorAll('input[name="q7"]:checked');
-  const q7 = Array.from(q7Checked).map(cb => cb.value).filter(val => val !== "기타");
-  const q7_etc = document.getElementById("inputQ7Etc").value.trim();
-  
+  const q6 = document.getElementById("inputQ6").value.trim();
+  const q7 = document.getElementById("inputQ7").value.trim();
   const q8 = document.getElementById("inputQ8").value.trim();
-  const q9 = document.getElementById("inputQ9").value.trim();
+  
+  const q9 = parseInt(document.querySelector('input[name="q9"]:checked').value);
+  
+  const q10 = document.getElementById("inputQ10").value.trim();
 
   return {
-    name,
-    eduDate,
-    q1, q2, q3, q4, q5,
-    q6,
-    q6_etc,
-    q7,
-    q7_etc,
-    q8,
-    q9
+    q1, q2, q3, q4, q5, q6, q7, q8, q9, q10
   };
 }
 
