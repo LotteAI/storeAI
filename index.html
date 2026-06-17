@@ -105,10 +105,10 @@
         <div class="card-inner">
           <span class="question-number">03</span>
           <h2 class="question-title"><strong>[지도 상 점포 표시 및 세부 정보 제공]</strong> 기능은 주변 상권과 점포 현황을 직관적으로 파악하는 데 얼마나 유용할 것으로 예상하십니까? <span class="required-star">*</span></h2>
-          <p class="question-subtitle">지도를 통해 점포들의 상세 현황 정보를 핀포인트로 조회하는 기능입니다.</p>
+          <p class="question-subtitle">지도를 통해 점포들의 상세 현황 정보를 핀포인트로 조회하는 기능입니다. (이미지 클릭 시 확대)</p>
           
-          <!-- 이미지 참고 영역 -->
-          <div class="question-image-wrapper">
+          <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
+          <div class="question-image-wrapper" onclick="openLightbox('data/q3.png')">
             <img src="data/q3.png" alt="Q3 지도 표시 화면 예시" class="question-img" onerror="this.parentNode.style.display='none'">
           </div>
 
@@ -153,9 +153,10 @@
         <div class="card-inner scrollable-card">
           <span class="question-number">04</span>
           <h2 class="question-title">제공 예정인 공공 데이터 중 점포 운영 및 판촉 계획 수립에 가장 실질적인 도움이 될 것으로 기대하는 항목은 무엇입니까? <span class="required-star">*</span> <span class="multiple-choice-badge">(복수 선택 가능)</span></h2>
-          
-          <!-- 이미지 참고 영역 -->
-          <div class="question-image-wrapper">
+          <p class="question-subtitle">(이미지 클릭 시 확대)</p>
+
+          <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
+          <div class="question-image-wrapper" onclick="openLightbox('data/q4.png')">
             <img src="data/q4.png" alt="Q4 공공 데이터 화면 예시" class="question-img" onerror="this.parentNode.style.display='none'">
           </div>
 
@@ -204,10 +205,10 @@
         <div class="card-inner">
           <span class="question-number">05</span>
           <h2 class="question-title"><strong>[이벤트 캘린더]</strong> 기능(경쟁점 팝업/행사 정보, 주요 컨벤션 행사 일정)이 마케팅 기획 및 고객 응대 준비에 어느 정도 도움이 될 것으로 보십니까? <span class="required-star">*</span></h2>
-          <p class="question-subtitle">점포 주변 경쟁사의 이벤트 및 Coex, BEXCO 등 주요 컨벤션센터 일정을 달력으로 통합 조회하는 기능입니다.</p>
+          <p class="question-subtitle">점포 주변 경쟁사의 이벤트 및 Coex, BEXCO 등 주요 컨벤션센터 일정을 달력으로 통합 조회하는 기능입니다. (이미지 클릭 시 확대)</p>
           
-          <!-- 이미지 참고 영역 -->
-          <div class="question-image-wrapper">
+          <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
+          <div class="question-image-wrapper" onclick="openLightbox('data/q5.png')">
             <img src="data/q5.png" alt="Q5 이벤트 캘린더 예시" class="question-img" onerror="this.parentNode.style.display='none'">
           </div>
 
@@ -252,9 +253,10 @@
         <div class="card-inner">
           <span class="question-number">06</span>
           <h2 class="question-title">경쟁점 행사 및 컨벤션 외에, 점포 운영에 도움을 주기 위해 <strong>추가로 필요한 데이터나 웹 크롤링을 희망하는 정보</strong>가 있다면 자유롭게 작성해 주세요. <span class="optional-badge">(선택)</span></h2>
-          
-          <!-- 이미지 참고 영역 -->
-          <div class="question-image-wrapper">
+          <p class="question-subtitle">(이미지 클릭 시 확대)</p>
+
+          <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
+          <div class="question-image-wrapper" onclick="openLightbox('data/q6.png')">
             <img src="data/q6.png" alt="Q6 참고 이미지" class="question-img" onerror="this.parentNode.style.display='none'">
           </div>
 
@@ -275,10 +277,10 @@
         <div class="card-inner">
           <span class="question-number">07</span>
           <h2 class="question-title"><strong>[AI 점포 전략 제언]</strong> 기능(수집 데이터를 종합하여 점포 전략을 추천하는 기능)에서 가장 필요로 하거나 기대하는 제언 영역은 무엇입니까? <span class="optional-badge">(선택)</span></h2>
-          <p class="question-subtitle">예: 날씨/이벤트 연계 프로모션 테마 추천, 혼잡 대비 대기 인원 최적화 등</p>
+          <p class="question-subtitle">예: 날씨/이벤트 연계 프로모션 테마 추천, 혼잡 대비 대기 인원 최적화 등 (이미지 클릭 시 확대)</p>
           
-          <!-- 이미지 참고 영역 -->
-          <div class="question-image-wrapper">
+          <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
+          <div class="question-image-wrapper" onclick="openLightbox('data/q7.png')">
             <img src="data/q7.png" alt="Q7 AI 전략 제언 예시" class="question-img" onerror="this.parentNode.style.display='none'">
           </div>
 
@@ -402,6 +404,12 @@
       <span class="copyright">© 2026 Store AI 기획팀. All rights reserved.</span>
     </div>
   </footer>
+
+  <!-- Image Lightbox Modal -->
+  <div class="lightbox-overlay" id="imageLightbox" onclick="closeLightbox()">
+    <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+    <img class="lightbox-content" id="lightboxImg" alt="확대 이미지" onclick="event.stopPropagation()">
+  </div>
 
   <!-- Firebase Web SDK v8 -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>

@@ -273,6 +273,23 @@ function parseFormData() {
   };
 }
 
+// 이미지 라이트박스(확대) 제어
+function openLightbox(src) {
+  const lightbox = document.getElementById("imageLightbox");
+  const lightboxImg = document.getElementById("lightboxImg");
+  if (lightbox && lightboxImg) {
+    lightboxImg.src = src;
+    lightbox.classList.add("active");
+  }
+}
+
+function closeLightbox() {
+  const lightbox = document.getElementById("imageLightbox");
+  if (lightbox) {
+    lightbox.classList.remove("active");
+  }
+}
+
 // CSS Shake Keyframes 추가를 위한 스타일 삽입
 const styleSheet = document.createElement("style");
 styleSheet.innerText = `
