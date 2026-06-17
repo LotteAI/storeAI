@@ -38,7 +38,7 @@ function setupEventListeners() {
   document.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       // 텍스트 영역(textarea)에서의 Enter는 줄바꿈을 해야 하므로 제외
-      if (document.activeElement.tagName === "TEXTAREA") {
+      if (document.activeElement && document.activeElement.tagName === "TEXTAREA") {
         return;
       }
       e.preventDefault();
@@ -76,7 +76,8 @@ function setupEventListeners() {
     radio.addEventListener("change", () => {
       setTimeout(() => {
         const card = radio.closest('.survey-card');
-        const stepNum = parseInt(card.getAttribute('data-step'));
+        if (!card) return;
+        const stepNum = parseInt(card.getAttribute('data-step') || "0");
         if (stepNum === currentStep) {
           validateAndNext(stepNum);
         }
@@ -105,10 +106,14 @@ function transitionCard(fromStep, toStep) {
     currentStep = toStep;
     updateProgress();
     
-    // 포커싱 자동 처리
-    const textInput = toCard.querySelector('.tech-input, .tech-textarea');
-    if (textInput) {
-      textInput.focus();
+    // 포커싱 자동 처리 (모바일 스크롤 튐 버그 방지를 위해 try-catch 적용)
+    try {
+      const textInput = toCard.querySelector('.tech-input, .tech-textarea');
+      if (textInput) {
+        textInput.focus({ preventScroll: true });
+      }
+    } catch (err) {
+      console.warn("Focus failed:", err);
     }
   }, 300);
 }
@@ -151,6 +156,7 @@ function prevStep() {
 // 유효성 검사 및 다음 이동
 function validateAndNext(step) {
   const card = document.querySelector(`.survey-card[data-step="${step}"]`);
+  if (!card) return;
   const isRequired = card.getAttribute("data-required") === "true";
   
   if (!isRequired) {
@@ -177,18 +183,54 @@ function validateAndNext(step) {
   } else {
     // 흔들림 에러 이펙트 부여
     const cardInner = card.querySelector(".card-inner");
-    cardInner.style.animation = "none";
-    setTimeout(() => {
-      cardInner.style.animation = "shake 0.4s ease";
-    }, 10);
+    if (cardInner) {
+      cardInner.style.animation = "none";
+      setTimeout(() => {
+        cardInner.style.animation = "shake 0.4s ease";
+      }, 10);
+    }
   }
+}
+
+// 전체 필수 값 정합성 최종 검증 (모바일 기기 폼 상태 꼬임 완벽 차단)
+function validateAllRequired() {
+  const requiredSteps = [
+    { step: 1, name: "q1", label: "근무 점포 유형 (1번)" },
+    { step: 2, name: "q2", label: "담당 업무 분야 (2번)" },
+    { step: 3, name: "q3", label: "지도 기능 유용성 (3번)" },
+    { step: 5, name: "q5", label: "캘린더 도움도 (5번)" },
+    { step: 9, name: "q9", label: "업무 효율 개선 (9번)" }
+  ];
+
+  for (const item of requiredSteps) {
+    const checked = document.querySelector(`input[name="${item.name}"]:checked`);
+    if (!checked) {
+      return { step: item.step, message: `필수 응답 사항인 ${item.label} 문항의 답변이 누락되었습니다. 해당 단계로 이동합니다.` };
+    }
+  }
+  
+  const checkedQ4 = document.querySelectorAll('input[name="q4"]:checked');
+  if (checkedQ4.length === 0) {
+    return { step: 4, message: "필수 응답 사항인 공공 데이터 활용 (4번) 문항의 답변이 누락되었습니다. 해당 단계로 이동합니다." };
+  }
+
+  return null;
 }
 
 // 폼 데이터 전송
 async function submitSurvey() {
   const submitBtn = document.querySelector(".btn-submit");
+  if (!submitBtn) return;
   const originalHtml = submitBtn.innerHTML;
   
+  // 1. 필수 문항 입력 최종 검증
+  const validationError = validateAllRequired();
+  if (validationError) {
+    alert(validationError.message);
+    transitionCard(currentStep, validationError.step);
+    return;
+  }
+
   // 로딩 상태 연출
   submitBtn.disabled = true;
   submitBtn.innerHTML = `<span class="spinner"></span> 제출 중...`;
@@ -207,24 +249,24 @@ async function submitSurvey() {
   }
 }
 
-// 폼 데이터 파싱
+// 폼 데이터 파싱 (Optional Chaining 적용으로 null-safe 처리)
 function parseFormData() {
-  const q1 = document.querySelector('input[name="q1"]:checked').value;
-  const q2 = document.querySelector('input[name="q2"]:checked').value;
-  const q3 = parseInt(document.querySelector('input[name="q3"]:checked').value);
+  const q1 = document.querySelector('input[name="q1"]:checked')?.value || "";
+  const q2 = document.querySelector('input[name="q2"]:checked')?.value || "";
+  const q3 = parseInt(document.querySelector('input[name="q3"]:checked')?.value || "0");
   
   const q4Checked = document.querySelectorAll('input[name="q4"]:checked');
   const q4 = Array.from(q4Checked).map(cb => cb.value);
   
-  const q5 = parseInt(document.querySelector('input[name="q5"]:checked').value);
+  const q5 = parseInt(document.querySelector('input[name="q5"]:checked')?.value || "0");
   
-  const q6 = document.getElementById("inputQ6").value.trim();
-  const q7 = document.getElementById("inputQ7").value.trim();
-  const q8 = document.getElementById("inputQ8").value.trim();
+  const q6 = document.getElementById("inputQ6")?.value.trim() || "";
+  const q7 = document.getElementById("inputQ7")?.value.trim() || "";
+  const q8 = document.getElementById("inputQ8")?.value.trim() || "";
   
-  const q9 = parseInt(document.querySelector('input[name="q9"]:checked').value);
+  const q9 = parseInt(document.querySelector('input[name="q9"]:checked')?.value || "0");
   
-  const q10 = document.getElementById("inputQ10").value.trim();
+  const q10 = document.getElementById("inputQ10")?.value.trim() || "";
 
   return {
     q1, q2, q3, q4, q5, q6, q7, q8, q9, q10
