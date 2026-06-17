@@ -6,7 +6,7 @@
  */
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAiRQ-GHT3jsseTA85U9m9proepfLQsQ9Y",
+  apiKey: 
   authDomain: "store-ai-ec4d5.firebaseapp.com",
   projectId: "store-ai-ec4d5",
   storageBucket: "store-ai-ec4d5.firebasestorage.app",
