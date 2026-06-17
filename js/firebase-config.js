@@ -16,7 +16,8 @@ const firebaseConfig = {
 };
 
 // SHA-256 해시 검증용 해시값 (비밀번호: storeai1!)
-const ADMIN_PASSWORD_HASH = "805c6d58ee7be29ccdc051f33f6df231c6d3ff3fb7c7849b251a37c768652d5e";
+const ADMIN_PASSWORD_HASH = "59d73c16e6596e7007ab0e97c5b2a52897d364b8bae16351e48c91a362e2198c";
+
 
 // SHA-256 해싱 함수 (Web Crypto API 사용)
 async function sha256(message) {
