@@ -138,6 +138,14 @@ class DatabaseService {
     ];
 
     const q6Answers = [
+      "행사 장소별 상세 면적이나 입점 가능 매대 수 정보가 추가되면 좋겠습니다.",
+      "연관 카테고리뿐만 아니라 구체적인 타겟 연령대 정보도 노출을 희망합니다.",
+      "행사별 예상 객단가 및 예상 매출 규모 정보도 상세 데이터로 확인하고 싶습니다.",
+      "참여하는 주요 브랜드 라인업 정보도 함께 노출되었으면 합니다.",
+      ""
+    ];
+
+    const q7Answers = [
       "경쟁사의 실시간 F&B 팝업 및 신규 브랜드 입점 일정을 추가로 크롤링하면 좋겠습니다.",
       "근처 대학교의 학기 일정 및 축제 기간도 함께 크롤링되었으면 합니다.",
       "인근 지하철역의 시간대별 하차 인원 추이 데이터를 연동해 주세요.",
@@ -146,7 +154,7 @@ class DatabaseService {
       ""
     ];
 
-    const q7Answers = [
+    const q8Answers = [
       "상권 날씨와 관광객 추이를 결합해 주말 프로모션 유형(예: 실내 행사 vs 야외 팝업)을 제언해 주면 좋겠음.",
       "주변 대형 컨벤션 일정에 맞춰 인근 식당가 및 MD 유치 전략 제안.",
       "비가 오거나 폭염이 있는 날, 방문객 동선에 기반한 점내 고객 분산 프로모션 추천.",
@@ -155,7 +163,7 @@ class DatabaseService {
       "지원 부서 관점에서, 혼잡도 예측에 기반한 주차 및 보안 인력 배치 최적화 제안."
     ];
 
-    const q8Answers = [
+    const q9Answers = [
       "백화점 브랜드별 구매 단가나 VIP 방문 비중 등 고객 세그먼트 특성이 반영되어야 함.",
       "자사 점포의 과거 프로모션 성과 이력 데이터가 필수적으로 학습되어야 함.",
       "대체 공휴일이나 샌드위치 데이 같은 캘린더 변수가 제대로 고려되어야 제언의 신뢰도가 올라갑니다.",
@@ -163,7 +171,7 @@ class DatabaseService {
       "브랜드 카테고리별(패션, 리빙, F&B) 기온 민감도가 다르므로 이를 차등 적용해야 함."
     ];
 
-    const q10Answers = [
+    const q11Answers = [
       "지도 UI가 모바일에서도 빠르게 로딩될 수 있도록 최적화가 중요할 것 같습니다.",
       "전반적으로 캘린더와 공공 API 연동은 획기적입니다. AI 전략 제언이 얼마나 신뢰성 있을지가 관건입니다.",
       "영업 담당자들이 아침 조회 시 쉽게 볼 수 있도록 데일리 대시보드 리포트 이메일 발송 기능이 있으면 좋겠네요.",
@@ -190,8 +198,9 @@ class DatabaseService {
         q6: q6Answers[i % q6Answers.length],
         q7: q7Answers[i % q7Answers.length],
         q8: q8Answers[i % q8Answers.length],
-        q9: Math.floor(Math.random() * 2) + 4, // 4 or 5
-        q10: q10Answers[i % q10Answers.length],
+        q9: q9Answers[i % q9Answers.length],
+        q10: Math.floor(Math.random() * 2) + 4, // 4 or 5
+        q11: q11Answers[i % q11Answers.length],
         submittedAt: new Date(Date.now() - (30 - i) * 6 * 3600 * 1000).toISOString()
       });
     }

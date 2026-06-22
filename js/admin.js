@@ -176,18 +176,18 @@ function renderMetrics() {
     return;
   }
 
-  // q3(지도), q5(캘린더), q9(효율성) 평균 계산
+  // q3(지도), q5(캘린더), q10(효율성) 평균 계산
   const sumQ3 = surveyResponses.reduce((acc, curr) => acc + (curr.q3 || 0), 0);
   const sumQ5 = surveyResponses.reduce((acc, curr) => acc + (curr.q5 || 0), 0);
-  const sumQ9 = surveyResponses.reduce((acc, curr) => acc + (curr.q9 || 0), 0);
+  const sumQ10 = surveyResponses.reduce((acc, curr) => acc + (curr.q10 || 0), 0);
 
   const avgQ3 = (sumQ3 / count).toFixed(1);
   const avgQ5 = (sumQ5 / count).toFixed(1);
-  const avgQ9 = (sumQ9 / count).toFixed(1);
+  const avgQ10 = (sumQ10 / count).toFixed(1);
 
   document.getElementById("metricAvgMap").innerHTML = `${avgQ3} <span class="max-val">/ 5.0</span>`;
   document.getElementById("metricAvgCal").innerHTML = `${avgQ5} <span class="max-val">/ 5.0</span>`;
-  document.getElementById("metricAvgEff").innerHTML = `${avgQ9} <span class="max-val">/ 5.0</span>`;
+  document.getElementById("metricAvgEff").innerHTML = `${avgQ10} <span class="max-val">/ 5.0</span>`;
 }
 
 // 2. Chart.js 시각화 차트 렌더링
@@ -218,7 +218,7 @@ function renderCharts() {
   surveyResponses.forEach(r => {
     indicatorSums[0] += r.q3 || 0;
     indicatorSums[1] += r.q5 || 0;
-    indicatorSums[2] += r.q9 || 0;
+    indicatorSums[2] += r.q10 || 0;
   });
   
   const indicatorAvgs = indicatorSums.map(sum => (sum / count).toFixed(2));
@@ -227,7 +227,7 @@ function renderCharts() {
   charts.metricsAvg = new Chart(ctx1, {
     type: 'bar',
     data: {
-      labels: ["Q3. 지도 유용성", "Q5. 캘린더 도움도", "Q9. 업무 효율 개선"],
+      labels: ["Q3. 지도 유용성", "Q5. 캘린더 도움도", "Q10. 업무 효율 개선"],
       datasets: [{
         label: '평균 점수 (5점 만점)',
         data: indicatorAvgs,
@@ -421,7 +421,7 @@ function renderTable() {
 
   const count = surveyResponses.length;
   if (count === 0) {
-    tableBody.innerHTML = `<tr><td colspan="13" class="no-feedback" style="text-align:center;">설문 데이터가 존재하지 않습니다.</td></tr>`;
+    tableBody.innerHTML = `<tr><td colspan="14" class="no-feedback" style="text-align:center;">설문 데이터가 존재하지 않습니다.</td></tr>`;
     return;
   }
 
@@ -450,7 +450,7 @@ function renderTable() {
   }
 
   // 2. 정렬 아이콘 헤더 업데이트
-  const headers = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'submittedAt'];
+  const headers = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6', 'q7', 'q8', 'q9', 'q10', 'q11', 'submittedAt'];
   headers.forEach(header => {
     const iconSpan = document.getElementById(`sort-${header}`);
     if (iconSpan) {
@@ -479,7 +479,9 @@ function renderTable() {
     const q6 = (r.q6 || '').replace(/"/g, '&quot;');
     const q7 = (r.q7 || '').replace(/"/g, '&quot;');
     const q8 = (r.q8 || '').replace(/"/g, '&quot;');
-    const q10 = (r.q10 || '').replace(/"/g, '&quot;');
+    const q9 = (r.q9 || '').replace(/"/g, '&quot;');
+    const q10 = r.q10 || 0;
+    const q11 = (r.q11 || '').replace(/"/g, '&quot;');
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -492,8 +494,9 @@ function renderTable() {
       <td class="subjective-col" title="${q6 || '-'}">${r.q6 || '-'}</td>
       <td class="subjective-col" title="${q7 || '-'}">${r.q7 || '-'}</td>
       <td class="subjective-col" title="${q8 || '-'}">${r.q8 || '-'}</td>
-      <td>${r.q9}</td>
-      <td class="subjective-col" title="${q10 || '-'}">${r.q10 || '-'}</td>
+      <td class="subjective-col" title="${q9 || '-'}">${r.q9 || '-'}</td>
+      <td>${q10}</td>
+      <td class="subjective-col" title="${q11 || '-'}">${r.q11 || '-'}</td>
       <td><span class="feedback-date">${dateStr}</span></td>
       <td>
         <button class="btn-row-delete" onclick="openDeleteModal('${r.id}')" title="삭제">
@@ -659,11 +662,12 @@ function downloadExcel() {
       "지도 유용성 (Q3)": r.q3 || 0,
       "공공 데이터 실효성 (Q4)": Array.isArray(r.q4) ? r.q4.join(", ") : (r.q4 || ''),
       "캘린더 도움도 (Q5)": r.q5 || 0,
-      "추가 희망 데이터 (Q6)": r.q6 || "",
-      "AI 제언 필요 영역 (Q7)": r.q7 || "",
-      "AI 신뢰 핵심 변수 (Q8)": r.q8 || "",
-      "업무 효율 개선 (Q9)": r.q9 || 0,
-      "종합 보완 의견 (Q10)": r.q10 || "",
+      "카테고리 상세 희망 데이터 (Q6)": r.q6 || "",
+      "추가 희망 데이터 (Q7)": r.q7 || "",
+      "AI 제언 필요 영역 (Q8)": r.q8 || "",
+      "AI 신뢰 핵심 변수 (Q9)": r.q9 || "",
+      "업무 효율 개선 (Q10)": r.q10 || 0,
+      "종합 보완 의견 (Q11)": r.q11 || "",
       "제출 시간": formattedDate
     };
   });
@@ -679,11 +683,12 @@ function downloadExcel() {
     { wch: 15 }, // 지도 유용성
     { wch: 35 }, // 공공 데이터
     { wch: 15 }, // 캘린더 도움도
-    { wch: 45 }, // Q6 추가 희망 데이터
-    { wch: 45 }, // Q7 제언 영역
-    { wch: 45 }, // Q8 신뢰 변수
-    { wch: 15 }, // Q9 업무 효율
-    { wch: 45 }, // Q10 보완 의견
+    { wch: 45 }, // Q6 카테고리 상세 희망 데이터
+    { wch: 45 }, // Q7 추가 희망 데이터
+    { wch: 45 }, // Q8 제언 영역
+    { wch: 45 }, // Q9 신뢰 변수
+    { wch: 15 }, // Q10 업무 효율
+    { wch: 45 }, // Q11 보완 의견
     { wch: 22 }  // 제출 시간
   ];
   worksheet['!cols'] = colWidths;

@@ -248,12 +248,12 @@
         </div>
       </div>
 
-      <!-- Question 6: Additional Data Request (Step 6) -->
+      <!-- Question 6: Category Detail Request (Step 6) -->
       <div class="survey-card" data-step="6">
         <div class="card-inner">
           <span class="question-number">06</span>
-          <h2 class="question-title"> <strong>[추가 데이터 수집 의견]</strong> <br> 축제/전시/팝업 스토어 정보 외에 점포 운영에 <br>도움을 주기 위해추가로 필요한 데이터나  <br>웹 크롤링을 희망하는 사이트가 있다면  <br>자유롭게 작성해 주세요. <span class="optional-badge">(선택)</span></h2>
-          <p class="question-subtitle">※ 이미지 클릭 시 확대</p>
+          <h2 class="question-title">KEY EVENT 영역에서 백화점 영업 카테고리 관련성 있는 항목은 별도로 표기하고 있습니다.<br>해당월 이벤트 영역에서 수집된 정보 외에 상세로 확인하고 싶은 데이터가 있으시다면 기재해주시기 바랍니다. <span class="optional-badge">(선택)</span></h2>
+          <p class="question-subtitle">현재 노출 데이터 - 행사명, 장소, 일정, 연관 카테고리 (이미지 클릭 시 확대)</p>
 
           <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
           <div class="question-image-wrapper" onclick="openLightbox('data/q6.png')">
@@ -261,7 +261,7 @@
           </div>
 
           <div class="input-wrapper textarea-wrapper">
-            <textarea id="inputQ6" name="q6" class="tech-textarea" placeholder="예: 인근 학교 축제 일정, 점포 인근 문화시설 공연 일정 등 추가로 필요한 외부 정보를 제안해주세요." rows="4"></textarea>
+            <textarea id="inputQ6" name="q6" class="tech-textarea" placeholder="추가 노출을 희망하는 데이터를 입력해주세요" rows="4"></textarea>
             <div class="focus-line"></div>
           </div>
 
@@ -272,20 +272,44 @@
         </div>
       </div>
 
-      <!-- Question 7: AI Advisor Feature (Step 7) -->
+      <!-- Question 7: Additional Data Request (Step 7) -->
       <div class="survey-card" data-step="7">
         <div class="card-inner">
           <span class="question-number">07</span>
+          <h2 class="question-title"> <strong>[추가 데이터 수집 의견]</strong> <br> 축제/전시/팝업 스토어 정보 외에 점포 운영에 <br>도움을 주기 위해추가로 필요한 데이터나  <br>웹 크롤링을 희망하는 사이트가 있다면  <br>자유롭게 작성해 주세요. <span class="optional-badge">(선택)</span></h2>
+          <p class="question-subtitle">※ 이미지 클릭 시 확대</p>
+
+          <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
+          <div class="question-image-wrapper" onclick="openLightbox('data/q7.png')">
+            <img src="data/q7.png" alt="Q7 참고 이미지" class="question-img" onerror="this.parentNode.style.display='none'">
+          </div>
+
+          <div class="input-wrapper textarea-wrapper">
+            <textarea id="inputQ7" name="q7" class="tech-textarea" placeholder="예: 인근 학교 축제 일정, 점포 인근 문화시설 공연 일정 등 추가로 필요한 외부 정보를 제안해주세요." rows="4"></textarea>
+            <div class="focus-line"></div>
+          </div>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary" onclick="prevStep()"><i data-lucide="arrow-left"></i> 이전</button>
+            <button class="btn btn-primary" onclick="nextStep()">다음 <i data-lucide="arrow-right"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Question 8: AI Advisor Feature (Step 8) -->
+      <div class="survey-card" data-step="8">
+        <div class="card-inner">
+          <span class="question-number">08</span>
           <h2 class="question-title"><strong>[AI 점포 전략 제언]</strong> <br>수집된 데이터를 기반으로 <br>AI가 점포 운영전략을 수립해주는 기능입니다. <br>점포에서 가장 필요로 하거나  <br>기대하는 제언 영역은 무엇입니까? <span class="optional-badge">(선택)</span></h2>
           <p class="question-subtitle"> ex)지역 축제 연계 프로모션, 경쟁사 팝업 행사 대응, <br>컨벤션 전시행사 대응(베이비페어&뷰티페어 등) <br>※ 이미지 클릭 시 확대</p>
           
           <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
-          <div class="question-image-wrapper" onclick="openLightbox('data/q7.png')">
-            <img src="data/q7.png" alt="Q7 AI 전략 제언 예시" class="question-img" onerror="this.parentNode.style.display='none'">
+          <div class="question-image-wrapper" onclick="openLightbox('data/q8.png')">
+            <img src="data/q8.png" alt="Q8 AI 전략 제언 예시" class="question-img" onerror="this.parentNode.style.display='none'">
           </div>
 
           <div class="input-wrapper textarea-wrapper">
-            <textarea id="inputQ7" name="q7" class="tech-textarea" placeholder="AI가 어떤 전략적 제언을 해주길 바라는지 기재해주세요." rows="4"></textarea>
+            <textarea id="inputQ8" name="q8" class="tech-textarea" placeholder="AI가 어떤 전략적 제언을 해주길 바라는지 기재해주세요." rows="4"></textarea>
             <div class="focus-line"></div>
           </div>
 
@@ -296,14 +320,14 @@
         </div>
       </div>
 
-      <!-- Question 8: AI Trust Factors (Step 8) -->
-      <div class="survey-card" data-step="8">
+      <!-- Question 9: AI Trust Factors (Step 9) -->
+      <div class="survey-card" data-step="9">
         <div class="card-inner">
-          <span class="question-number">08</span>
+          <span class="question-number">09</span>
           <h2 class="question-title"> <strong> [추가 요구사항 수집] </strong> <br>지금까지 소개드린 기능 외에  <br>추가로 제공 받았으면 하는 기능이나 정보를  <br>자유롭게 기재해주세요.  <span class="optional-badge">(선택)</span></h2>
           
           <div class="input-wrapper textarea-wrapper">
-            <textarea id="inputQ8" name="q8" class="tech-textarea" placeholder="점포 운영이나 영업에 도움이 될 수 있도록 필요한 기능이나 정보들을 기재 부탁드립니다." rows="4"></textarea>
+            <textarea id="inputQ9" name="q9" class="tech-textarea" placeholder="점포 운영이나 영업에 도움이 될 수 있도록 필요한 기능이나 정보들을 기재 부탁드립니다." rows="4"></textarea>
             <div class="focus-line"></div>
           </div>
 
@@ -314,10 +338,10 @@
         </div>
       </div>
 
-      <!-- Question 9: Efficiency Improvement (Step 9) -->
-      <div class="survey-card" data-step="9" data-required="true">
+      <!-- Question 10: Efficiency Improvement (Step 10) -->
+      <div class="survey-card" data-step="10" data-required="true">
         <div class="card-inner">
-          <span class="question-number">09</span>
+          <span class="question-number">10</span>
           <h2 class="question-title">본 서비스(Store AI)가 실제로 도입된다면,<br> <strong>업무 효율성 개선</strong>에 어느 정도 도움이 될 것이라 <br>생각하십니까? <span class="required-star">*</span></h2>
           
           <div class="scale-container">
@@ -327,23 +351,23 @@
             </div>
             <div class="scale-group">
               <label class="scale-item">
-                <input type="radio" name="q9" value="1" required>
+                <input type="radio" name="q10" value="1" required>
                 <span class="scale-num">1</span>
               </label>
               <label class="scale-item">
-                <input type="radio" name="q9" value="2">
+                <input type="radio" name="q10" value="2">
                 <span class="scale-num">2</span>
               </label>
               <label class="scale-item">
-                <input type="radio" name="q9" value="3">
+                <input type="radio" name="q10" value="3">
                 <span class="scale-num">3</span>
               </label>
               <label class="scale-item">
-                <input type="radio" name="q9" value="4">
+                <input type="radio" name="q10" value="4">
                 <span class="scale-num">4</span>
               </label>
               <label class="scale-item">
-                <input type="radio" name="q9" value="5">
+                <input type="radio" name="q10" value="5">
                 <span class="scale-num">5</span>
               </label>
             </div>
@@ -351,19 +375,19 @@
 
           <div class="btn-group">
             <button class="btn btn-secondary" onclick="prevStep()"><i data-lucide="arrow-left"></i> 이전</button>
-            <button class="btn btn-primary" onclick="validateAndNext(9)">다음 <i data-lucide="arrow-right"></i></button>
+            <button class="btn btn-primary" onclick="validateAndNext(10)">다음 <i data-lucide="arrow-right"></i></button>
           </div>
         </div>
       </div>
 
-      <!-- Question 10: General Feedback (Step 10) -->
-      <div class="survey-card" data-step="10">
+      <!-- Question 11: General Feedback (Step 11) -->
+      <div class="survey-card" data-step="11">
         <div class="card-inner">
-          <span class="question-number">10</span>
+          <span class="question-number">11</span>
           <h2 class="question-title"><strong>[자유 의견 수집]</strong> <br>Store AI 서비스의 성공적인 도입을 위해, <br>AX팀에 제안하고 싶은 보완점이나 자유로운 의견을 남겨주세요. <span class="optional-badge">(선택)</span></h2>
           
           <div class="input-wrapper textarea-wrapper">
-            <textarea id="inputQ10" name="q10" class="tech-textarea" placeholder="Store AI와 무관한 AI 관련 신규 서비스 아이디어를 기재해주셔도 됩니다!" rows="4"></textarea>
+            <textarea id="inputQ11" name="q11" class="tech-textarea" placeholder="Store AI와 무관한 AI 관련 신규 서비스 아이디어를 기재해주셔도 됩니다!" rows="4"></textarea>
             <div class="focus-line"></div>
           </div>
 
@@ -377,8 +401,8 @@
         </div>
       </div>
 
-      <!-- Completion Screen (Step 11) -->
-      <div class="survey-card" data-step="11">
+      <!-- Completion Screen (Step 12) -->
+      <div class="survey-card" data-step="12">
         <div class="card-inner">
           <div class="success-icon-wrapper">
             <i data-lucide="check-circle" class="success-icon"></i>

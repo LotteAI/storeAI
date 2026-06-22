@@ -3,7 +3,7 @@
  */
 
 let currentStep = 0;
-const totalSteps = 10; // 질문 수 (1 ~ 10)
+const totalSteps = 11; // 질문 수 (1 ~ 11)
 
 document.addEventListener("DOMContentLoaded", () => {
   // Lucide 아이콘 초기화
@@ -166,8 +166,8 @@ function validateAndNext(step) {
 
   let isValid = false;
   
-  // Q1, Q2, Q3, Q5, Q9 (라디오 버튼 검증)
-  if (step === 1 || step === 2 || step === 3 || step === 5 || step === 9) {
+  // Q1, Q2, Q3, Q5, Q10 (라디오 버튼 검증)
+  if (step === 1 || step === 2 || step === 3 || step === 5 || step === 10) {
     const qNum = `q${step}`;
     const checked = card.querySelector(`input[name="${qNum}"]:checked`);
     isValid = checked !== null;
@@ -199,7 +199,7 @@ function validateAllRequired() {
     { step: 2, name: "q2", label: "담당 업무 분야 (2번)" },
     { step: 3, name: "q3", label: "지도 기능 유용성 (3번)" },
     { step: 5, name: "q5", label: "캘린더 도움도 (5번)" },
-    { step: 9, name: "q9", label: "업무 효율 개선 (9번)" }
+    { step: 10, name: "q10", label: "업무 효율 개선 (10번)" }
   ];
 
   for (const item of requiredSteps) {
@@ -239,8 +239,8 @@ async function submitSurvey() {
     const data = parseFormData();
     await window.dbService.submitResponse(data);
     
-    // 제출 성공 시 완료 화면(Step 11)으로 이동
-    transitionCard(currentStep, 11);
+    // 제출 성공 시 완료 화면(Step 12)으로 이동
+    transitionCard(currentStep, 12);
   } catch (error) {
     console.error("설문 제출에 실패했습니다:", error);
     alert(error.message || "제출에 실패했습니다. 네트워크 상태 및 파이어베이스 설정을 확인하시고 다시 시도해 주세요.");
@@ -263,13 +263,14 @@ function parseFormData() {
   const q6 = document.getElementById("inputQ6")?.value.trim() || "";
   const q7 = document.getElementById("inputQ7")?.value.trim() || "";
   const q8 = document.getElementById("inputQ8")?.value.trim() || "";
+  const q9 = document.getElementById("inputQ9")?.value.trim() || "";
   
-  const q9 = parseInt(document.querySelector('input[name="q9"]:checked')?.value || "0");
+  const q10 = parseInt(document.querySelector('input[name="q10"]:checked')?.value || "0");
   
-  const q10 = document.getElementById("inputQ10")?.value.trim() || "";
+  const q11 = document.getElementById("inputQ11")?.value.trim() || "";
 
   return {
-    q1, q2, q3, q4, q5, q6, q7, q8, q9, q10
+    q1, q2, q3, q4, q5, q6, q7, q8, q9, q10, q11
   };
 }
 
