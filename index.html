@@ -41,7 +41,7 @@
           <div class="tech-badge">LOTTE DEPARTMENT STORE</div>
           <h1 class="welcome-title">Store AI 서비스 기획<br><span class="gradient-text">피드백 설문조사</span></h1>
           <p class="welcome-desc">
-            본 설문조사는 점포 인근 축제/전시/행사 정보를 제공하는 <strong>'Store AI'</strong> 서비스의 실효성 검증과 기능 보완을 위한 조사입니다.<br>
+            본 설문조사는 점포 인근 축제/전시/행사 정보를 제공하는 <br> <strong>'Store AI'</strong> 서비스의 실효성 검증과 기능 보완을 위한 조사입니다.<br>
             현업의 소중한 피드백은 서비스 고도화에 적극 반영될 예정이오니 성실한 답변 부탁드립니다.
           </p>
           <button class="btn btn-primary btn-large btn-start" onclick="nextStep()">
@@ -104,8 +104,8 @@
       <div class="survey-card" data-step="3" data-required="true">
         <div class="card-inner">
           <span class="question-number">03</span>
-          <h2 class="question-title"><strong>[지도 상 점포 표시 및 세부 정보 제공]</strong> 기능은 주변 상권과 점포 현황을 직관적으로 파악하는 데 얼마나 유용할 것으로 예상하십니까? <span class="required-star">*</span></h2>
-          <p class="question-subtitle">지도를 통해 점포들의 상세 현황 정보를 핀포인트로 조회하는 기능입니다. (이미지 클릭 시 확대)</p>
+          <h2 class="question-title"><strong>[지도 상 점포 표시 및 세부 정보 제공]</strong> <br>지도 UI는 주변 상권과 점포 현황을 직관적으로 파악하는 데 <br>얼마나 유용할 것으로 예상하십니까? <span class="required-star">*</span></h2>
+          <p class="question-subtitle"> ※ 하단 이미지 클릭 시 확대</p>
           
           <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
           <div class="question-image-wrapper" onclick="openLightbox('data/q3.png')">
@@ -152,8 +152,8 @@
       <div class="survey-card" data-step="4" data-required="true">
         <div class="card-inner scrollable-card">
           <span class="question-number">04</span>
-          <h2 class="question-title">제공 예정인 공공 데이터 중 점포 운영 및 판촉 계획 수립에 가장 실질적인 도움이 될 것으로 기대하는 항목은 무엇입니까? <span class="required-star">*</span> <span class="multiple-choice-badge">(복수 선택 가능)</span></h2>
-          <p class="question-subtitle">(이미지 클릭 시 확대)</p>
+          <h2 class="question-title">제공 예정인 데이터 중 점포 운영에 <br> 실질적인 도움이 될 것으로 기대하는 항목은 무엇입니까? <span class="required-star">*</span> <span class="multiple-choice-badge">(복수 선택 가능)</span></h2>
+          <p class="question-subtitle">※데이터 소스 : 기상청, 관광공사, 경쟁사 홈페이지 </p>
 
           <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
           <div class="question-image-wrapper" onclick="openLightbox('data/q4.png')">
@@ -162,34 +162,34 @@
 
           <div class="options-list checkbox-group">
             <label class="option-card">
-              <input type="checkbox" name="q4" value="이달의 주요 행사">
+              <input type="checkbox" name="q4" value="단기 날씨 예보 (3일내)">
               <span class="option-checkbox"></span>
-              <span class="option-label">이달의 주요 행사</span>
+              <span class="option-label">단기 날씨 예보 (3일내)</span>
             </label>
             <label class="option-card">
-              <input type="checkbox" name="q4" value="연간 총 행사">
+              <input type="checkbox" name="q4" value="점포 인근 축제 정보(관광공사)">
               <span class="option-checkbox"></span>
-              <span class="option-label">연간 총 행사</span>
+              <span class="option-label">점포 인근 축제 정보(관광공사)</span>
             </label>
             <label class="option-card">
-              <input type="checkbox" name="q4" value="관광객 최고 집중일자">
+              <input type="checkbox" name="q4" value="점포 인근 전시 정보(컨벤션센터)">
               <span class="option-checkbox"></span>
-              <span class="option-label">관광객 최고 집중일자 (한국관광공사 데이터)</span>
+              <span class="option-label">점포 인근 전시 정보(컨벤션센터)</span>
             </label>
             <label class="option-card">
-              <input type="checkbox" name="q4" value="평균 집중률">
+              <input type="checkbox" name="q4" value="점포 인근 경쟁사 팝업 정보(현대/신세계)">
               <span class="option-checkbox"></span>
-              <span class="option-label">평균 관광 집중률</span>
+              <span class="option-label">점포 인근 경쟁사 팝업 정보(현대/신세계)</span>
             </label>
             <label class="option-card">
-              <input type="checkbox" name="q4" value="3일 날씨 예보">
+              <input type="checkbox" name="q4" value="향후 30일 내 점포 인근 관광객 집중률 예측 추이">
               <span class="option-checkbox"></span>
-              <span class="option-label">앞으로 3일간 날씨 (기상청 API)</span>
+              <span class="option-label">향후 30일 내 점포 인근 관광객 집중률 예측 추이</span>
             </label>
             <label class="option-card">
-              <input type="checkbox" name="q4" value="모두 유용하지 않음">
+              <input type="checkbox" name="q4" value="기타">
               <span class="option-checkbox"></span>
-              <span class="option-label">모두 유용하지 않음</span>
+              <span class="option-label">기타</span>
             </label>
           </div>
 
@@ -204,7 +204,7 @@
       <div class="survey-card" data-step="5" data-required="true">
         <div class="card-inner">
           <span class="question-number">05</span>
-          <h2 class="question-title"><strong>[이벤트 캘린더]</strong> 기능(경쟁점 팝업/행사 정보, 주요 컨벤션 행사 일정)이 마케팅 기획 및 고객 응대 준비에 어느 정도 도움이 될 것으로 보십니까? <span class="required-star">*</span></h2>
+          <h2 class="question-title"><strong>[이벤트 캘린더]</strong> <br> 근무하시는 점포 인근 외부 행사 일정을 하나의 화면에서 본다면, <br> 점포 운영 관점에서 도움이 될 것으로 기대합니까? <span class="required-star">*</span></h2>
           <p class="question-subtitle">점포 주변 경쟁사의 이벤트 및 Coex, BEXCO 등 주요 컨벤션센터 일정을 달력으로 통합 조회하는 기능입니다. (이미지 클릭 시 확대)</p>
           
           <!-- 이미지 참고 영역 (터치/클릭 확대 이벤트 장착) -->
